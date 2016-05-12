@@ -1,3 +1,21 @@
+// routing
+Router.configure({
+    layoutTemplate: 'ApplicationLayout'
+});
+
+Router.route('/', function () {
+  this.render('navbar', {
+    to: "navbar"
+  });
+  this.render('website_form', {
+  	to: "main"
+  });
+  this.render('website_list', {
+  	to: "secondary"
+  });;
+});
+
+
 /////
 // template helpers 
 /////

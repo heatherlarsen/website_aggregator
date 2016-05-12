@@ -85,6 +85,7 @@ standard-minifier-js@1.0.5-rc.3
 templating@1.1.8-rc.3
 templating-tools@1.0.3-rc.3
 tracker@1.0.12-rc.3
+twbs:bootstrap@3.3.6
 ui@1.0.10-rc.3
 underscore@1.0.7-rc.3
 url@1.0.8-rc.3

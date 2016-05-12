@@ -1,5 +1,31 @@
 /* CSS declarations go here */
+body {
+	padding-top: 60px;
+}
+
 
 .hidden_div {
 	display: none;
+}
+
+/* override sign-in section */
+#login-buttons {
+	line-height: 50px;
+}
+
+#login-dropdown-list {
+    top: 45px;
+    left: -180px;
+}
+
+#login-buttons .login-close-text {
+    float: right;
+    line-height: 1;
+    font-size: 12px;
+    text-decoration: none;
+}
+
+/* override bootstrap icons */
+.glyphicon span {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
