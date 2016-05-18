@@ -1,5 +1,44 @@
 /* CSS declarations go here */
+body {
+	padding-top: 60px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin: 0px;
+    padding: 0px;
+}
 
 .hidden_div {
 	display: none;
+}
+
+.navbar-header {
+    text-align: center;
+}
+
+.navbar-link {
+    cursor: pointer;
+    line-height: 50px;
+}
+
+/* override sign-in section */
+#login-buttons {
+	line-height: 50px;
+}
+
+#login-dropdown-list {
+    top: 45px;
+    left: 0px;
+}
+
+#login-buttons .login-close-text {
+    float: right;
+    line-height: 1;
+    font-size: 12px;
+    text-decoration: none;
+}
+
+/* override bootstrap icons */
+.glyphicon span {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
