@@ -12,6 +12,9 @@
     <div class="container">
         {{> yield "main"}}
         {{> yield "secondary"}}
+
+        {{> yield "comments"}}
+        {{> yield "commentForm"}}
     </div>
 </template>
 
@@ -92,7 +95,7 @@
 <template name="website_list">
     <ol>
         {{#each websites}}
-        {{>website_item}}
+            {{>website_item}}
         {{/each}}
     </ol>
 </template>
@@ -105,16 +108,18 @@
             {{description}}
         </p>
         <p>Rating: {{rating}}</p>
-        <a href="#" class="btn btn-default js-upvote">
-            <span class="glyphicon glyphicon-with-text glyphicon-arrow-up" aria-hidden="true">
-                <span>Vote Up</span>
-            </span>
-        </a>
-        <a href="#" class="btn btn-default js-downvote">
-            <span class="glyphicon glyphicon-with-text glyphicon-arrow-down" aria-hidden="true">
-                <span>Vote Down</span>
-            </span>
-        </a>
+        {{#if currentUser}}
+            <a href="#" class="btn btn-default js-upvote">
+                <span class="glyphicon glyphicon-with-text glyphicon-arrow-up" aria-hidden="true">
+                    <span>Vote Up</span>
+                </span>
+            </a>
+            <a href="#" class="btn btn-default js-downvote">
+                <span class="glyphicon glyphicon-with-text glyphicon-arrow-down" aria-hidden="true">
+                    <span>Vote Down</span>
+                </span>
+            </a>
+        {{/if}}
     </li>
 </template>
 
@@ -125,21 +130,11 @@
         {{description}}
     </p>
     <a href="{{url}}" class="btn btn-default" target="_blank">Visit Site</a>
+</template>
 
+<template name="comment_form">
     {{#if currentUser}}
-        <div class="comment-section">
-            <h3>Comments: </h3>
-            <div class="comment-item">
-                <ul>
-                    {{#each comments}}
-                        {{>comment_item}}
-                    {{/each}}
-                </ul>
-            </div>
-
-            <a href="#" class="btn btn-default js-show-comment-form">Add Comment</a>
-        </div>
-
+        <a href="#" class="btn btn-default js-show-comment-form">Add Comment</a>
         <div class="modal fade" id="comment_add_form">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -177,9 +172,25 @@
     </div>
 </template>
 
+<template name="comment_list">
+    {{#if currentUser}}
+        <div class="comment-section">
+            <h3>Comments</h3>
+            <div class="comment-item">
+                <ul>
+                    {{#each comments}}
+                        {{>comment_item}}
+                    {{/each}}
+                </ul>
+            </div>
+        </div>
+    {{/if}}
+</template>
+
 <template name="comment_item">
     <li>
-        <div>{{websiteId}}</div>
         <div>{{comment}}</div>
+        <div>{{createdOn}}</div>
+        <div>{{createdBy}}</div>
     </li>
 </template>

@@ -25,6 +25,12 @@ Router.route('/website/:_id', function() {
 			return Websites.findOne({_id:this.params._id});
 		}
 	});
+	this.render('comment_list', {
+		to: "comments"
+	});
+	this.render('comment_form', {
+		to: "commentForm"
+	});
 });
 
 // accounts config
@@ -43,9 +49,10 @@ Template.website_list.helpers({
 	}
 });
 
+
 Template.comment_list.helpers({
-	comments: function() {
-		return Comments.findOne({websiteId:this._id});
+	comments:function() {
+		return Comments.find({websiteId: Router.current().params['_id']}, {sort:{createdOn:-1}});
 	}
 });
 
@@ -53,6 +60,12 @@ Template.comment_list.helpers({
 /////
 // template events 
 /////
+
+Template.navbar.events({
+	'click .js-show-website-form': function(event) {
+        $("#website_add_form").modal('show');
+    }
+});
 
 Template.website_item.events({
 	"click .js-upvote":function(event){
@@ -85,12 +98,9 @@ Template.website_item.events({
 
 		return false;// prevent the button from reloading the page
 	}
-})
+});
 
 Template.website_form.events({
-	'click .js-show-website-form': function(event) {
-        $("#website_add_form").modal('show');
-    }, 
     "click .js-cancel-form": function(event) {
     	$("#website_add_form").modal('hide');
     },
@@ -122,7 +132,7 @@ Template.website_form.events({
 	}
 });
 
-Template.website.events({
+Template.comment_form.events({
 	'click .js-show-comment-form': function(event) {
 		$('#comment_add_form').modal('show');
 	}, 
@@ -131,8 +141,9 @@ Template.website.events({
 	}, 
 	'submit .js-save-comment-form': function(event) {
 		if (Meteor.user()) {
+			console.log(Meteor.user()._id);
 			Comments.insert({
-				websiteId: this._id,
+				websiteId: Router.current().params['_id'],
 				comment: event.target.comment.value,
 				createdOn: new Date(),
 				createdBy: Meteor.user()._id
