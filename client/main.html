@@ -1,14 +1,9 @@
 <head>
-    <title>Site Ace</title>
+    <title>Site Ratings</title>
 </head>
 
 <body>
-    <!-- 
-    <div class="container">
-        {{> website_form}}
-        {{> website_list}}
-    </div>
-    -->
+
 </body>
 
 <template name="ApplicationLayout">
@@ -22,15 +17,26 @@
 
 <template name="navbar">
     <nav class="navbar navbar-default navbar-fixed-top">
-        <div class="container-fluid">
+        <div class="container">
             <div class="row">
-                <div class="col-lg-11">
-                    <div class="navbar-header">
-                        <a href="/" class="navbar-brand">Site Ace</a>
+                {{#if currentUser}}
+                    <div class="col-lg-2">
+                        <div class="navbar-header">
+                            <a href="/" class="navbar-brand">Site Ratings</a>
+                        </div>
                     </div>
-                </div>
-                <div class="col-lg-1">
-                    {{> loginButtons}}
+                    <div class="col-lg-8 js-show-website-form">
+                        <div class="navbar-link">Add Site</div>
+                    </div>
+                {{else}}
+                    <div class="col-lg-10">
+                        <div class="navbar-header">
+                            <a href="/" class="navbar-brand">Site Ratings</a>
+                        </div>
+                    </div>
+                {{/if}}
+                <div class="col-lg-2">
+                    {{> loginButtons align="right"}}
                 </div>
             </div>
         </div>
@@ -38,28 +44,47 @@
 </template>
 
 <template name="website_form">
-    <a class="btn btn-default js-toggle-website-form" href="#">
-        <span class="glyphicon glyphicon-with-text glyphicon-plus" aria-hidden="true">
-            <span>Add A New Site</span>
-        </span>
-    </a>
-    <div id="website_form" class="hidden_div">
-        <form class="js-save-website-form">
-            <div class="form-group">
-                <label for="url">Site address</label>
-                <input type="text" class="form-control" id="url" placeholder="http://www.mysite.com">
+    <div class="modal fade" id="website_add_form">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form class="js-save-website-form">
+                    <div class="modal-header">
+                        <div class="modal-title"></div>
+                    </div>
+                    <div class="modal-body">
+                        <div id="website_form">
+                            <div class="form-group">
+                                <label for="url">Site address</label>
+                                <input type="text" class="form-control" id="url" placeholder="http://www.mysite.com" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="title">Title</label>
+                                <input type="text" class="form-control" id="title" placeholder="Mysite">
+                            </div>
+                            <div class="form-group">
+                                <label for="description">Description</label>
+                                <input type="text" class="form-control" id="description" placeholder="I found this site really useful for ..." required>
+                            </div>
+                        </div>  
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">Submit</button>
+                        <button class="btn btn-warning js-cancel-form" data-dismiss="modal">Cancel</button>
+                    </div>
+                </form>
             </div>
-            <div class="form-group">
-                <label for="title">Title</label>
-                <input type="text" class="form-control" id="title" placeholder="Mysite">
-            </div>
-            <div class="form-group">
-                <label for="description">Description</label>
-                <input type="text" class="form-control" id="description" placeholder="I found this site really useful for ...">
-            </div>
+        </div>
+    </div>
 
-            <button type="submit" class="btn btn-default">Submit</button>
-        </form>
+    <div class="modal fade" id="login_warning">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <h3>Please log in</h3><br/>
+                    <button class="btn btn-default js-close-warning">Ok</button>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -75,10 +100,11 @@
 <!-- template that displays individual website entries -->
 <template name="website_item">
     <li>
-        <a href="{{url}}">{{title}}</a>
+        <a href="/website/{{_id}}">{{title}}</a>
         <p>
             {{description}}
         </p>
+        <p>Rating: {{rating}}</p>
         <a href="#" class="btn btn-default js-upvote">
             <span class="glyphicon glyphicon-with-text glyphicon-arrow-up" aria-hidden="true">
                 <span>Vote Up</span>
@@ -89,6 +115,71 @@
                 <span>Vote Down</span>
             </span>
         </a>
-        <!-- you will be putting your up and down vote buttons in here! -->
+    </li>
+</template>
+
+<template name="website">
+    <h2>{{title}}</h2>
+    <span class=""><strong>Rating:</strong> {{rating}}</span>
+    <p>
+        {{description}}
+    </p>
+    <a href="{{url}}" class="btn btn-default" target="_blank">Visit Site</a>
+
+    {{#if currentUser}}
+        <div class="comment-section">
+            <h3>Comments: </h3>
+            <div class="comment-item">
+                <ul>
+                    {{#each comments}}
+                        {{>comment_item}}
+                    {{/each}}
+                </ul>
+            </div>
+
+            <a href="#" class="btn btn-default js-show-comment-form">Add Comment</a>
+        </div>
+
+        <div class="modal fade" id="comment_add_form">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form class="js-save-comment-form">
+                        <div class="modal-header">
+                            <div class="modal-title"></div>
+                        </div>
+                        <div class="modal-body">
+                            <div id="comment_form">
+                                <div class="form-group">
+                                    <label for="description">Comment</label>
+                                    <input type="text" class="form-control" id="comment" placeholder="What do you think?" required>
+                                </div>
+                            </div>  
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-success">Submit</button>
+                            <button class="btn btn-warning js-cancel-form" data-dismiss="modal">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    {{/if}}
+
+    <div class="modal fade" id="comment_login_warning">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <h3>Please log in</h3><br/>
+                    <button class="btn btn-default js-close-comment-warning">Ok</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<template name="comment_item">
+    <li>
+        <div>{{websiteId}}</div>
+        <div>{{comment}}</div>
     </li>
 </template>
